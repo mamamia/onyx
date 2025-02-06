@@ -1,12 +1,13 @@
+import re
+import string
 from collections.abc import Callable
 from collections.abc import Iterator
 from datetime import datetime
 from datetime import timezone
-import re
-import string
 from typing import TypeVar
 
-from dateutil.parser import parse, parserinfo
+from dateutil.parser import parse
+from dateutil.parser import parserinfo
 
 from onyx.configs.app_configs import CONNECTOR_LOCALHOST_OVERRIDE
 from onyx.configs.constants import IGNORE_FOR_QA

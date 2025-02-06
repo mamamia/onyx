@@ -58,7 +58,6 @@ def test_time_str_to_utc() -> None:
         "22 Mar 2020 20:12:18 +0000 (GMT)": datetime.datetime(
             2020, 3, 22, 20, 12, 18, tzinfo=datetime.timezone.utc
         ),
-
         # malformed strings, which should be fixed automatically:
         # 0000 corrected to +0000
         "22 Mar 2020 20:12:18 0000": datetime.datetime(
