@@ -2,9 +2,11 @@ from collections.abc import Callable
 from collections.abc import Iterator
 from datetime import datetime
 from datetime import timezone
+import re
+import string
 from typing import TypeVar
 
-from dateutil.parser import parse
+from dateutil.parser import parse, parserinfo
 
 from onyx.configs.app_configs import CONNECTOR_LOCALHOST_OVERRIDE
 from onyx.configs.constants import IGNORE_FOR_QA
@@ -14,6 +16,14 @@ from onyx.utils.text_processing import is_valid_email
 
 T = TypeVar("T")
 U = TypeVar("U")
+
+
+def _is_valid_tzname(tz_name_str: str) -> bool:
+    # based on dateutil.parser _could_be_tzname
+    return len(tz_name_str) <= 5 and (
+        all(x in string.ascii_uppercase for x in tz_name_str)
+        or tz_name_str in parserinfo.UTCZONE
+    )
 
 
 def datetime_to_utc(dt: datetime) -> datetime:
@@ -31,6 +41,22 @@ def time_str_to_utc(datetime_str: str) -> datetime:
         if "0000" in datetime_str:
             # Convert "0000" to "+0000" for proper timezone parsing
             fixed_dt_str = datetime_str.replace(" 0000", " +0000")
+            dt = parse(fixed_dt_str)
+        elif (
+            len(
+                matches := list(
+                    match
+                    for match in re.findall(r"\+\d{4} \(([^)]*)\)", datetime_str)
+                    if not _is_valid_tzname(match)
+                )
+            )
+            == 1
+        ):
+            # Where a string contains both an offset AND a timezone name BUT the name is invalid: remove the name
+            # e.g.
+            # Thu, 23 Jan 2025 10:58:32 +0300 (+03) -> Thu, 23 Jan 2025 10:58:32 +0300
+            # Sat, 25 Jan 2025 05:15:30 +1100 (AUSNSW) -> Sat, 25 Jan 2025 05:15:30 +1100
+            fixed_dt_str = datetime_str.replace(f" ({matches[0]})", "")
             dt = parse(fixed_dt_str)
         else:
             raise
