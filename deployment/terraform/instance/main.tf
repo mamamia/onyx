@@ -9,6 +9,21 @@ resource "google_compute_address" "static_ip" {
   project      = var.project
   region       = var.region
   address_type = "EXTERNAL"
+
+  lifecycle {
+    # The static external IP for this instance has probably been used in CloudFlare to configure DNS for the subdomain, so terraform is configured to stop you from destroying it.
+    #
+    # This will block you from destroying the module. You can work around this protection by running:
+    # > terraform state rm module.{module_name}.google_compute_address.static_ip
+    # > terraform destroy -target module.{module_name}
+    #
+    # If you then want to recreate the module, run:
+    # > terraform import module.{module_name}.google_compute_address.static_ip {module_name}
+    # > terraform apply
+    #
+    # If you want to permanently destroy the static IP, either comment out `prevent_destroy` below, or use `terraform state rm` as shown above and manually delete the static IP.
+    prevent_destroy = true
+  }
 }
 
 resource "google_compute_instance" "instance" {
