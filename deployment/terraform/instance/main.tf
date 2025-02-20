@@ -90,3 +90,12 @@ resource "google_compute_instance" "instance" {
 locals {
   public_ip = google_compute_instance.instance.network_interface[0].access_config[0].nat_ip
 }
+
+data "external" "remote_command" {
+  depends_on = [google_compute_instance.instance]
+  
+  program = ["sh", "-c", <<-EOT
+    ssh -o StrictHostKeyChecking=no -i ~/.ssh/google_compute_engine samwarner@${local.public_ip} 'echo foo' | jq -R -s '{output: .}'
+  EOT
+  ]
+}
