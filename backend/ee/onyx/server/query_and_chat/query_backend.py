@@ -168,7 +168,7 @@ def get_answer_stream(
             is_for_edit=False,
         )
 
-    llm = get_main_llm_from_tuple(get_llms_for_persona(persona_info))
+    llm = get_main_llm_from_tuple(get_llms_for_persona(persona=persona_info, user_email=user.email if user else None))
 
     llm_tokenizer = get_tokenizer(
         model_name=llm.config.model_name,

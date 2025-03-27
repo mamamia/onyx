@@ -409,7 +409,7 @@ def stream_chat_message_objects(
 
         update_user_assistant_milestone(
             milestone=multi_assistant_milestone,
-            user_id=str(user.id) if user else NO_AUTH_USER_ID,
+            user_id=str(user_id) if user_id else NO_AUTH_USER_ID,
             assistant_id=persona.id,
             db_session=db_session,
         )
@@ -441,6 +441,7 @@ def stream_chat_message_objects(
             llm, fast_llm = get_llms_for_persona(
                 persona=persona,
                 llm_override=new_msg_req.llm_override or chat_session.llm_override,
+                user_email=user.email if user else None,
                 additional_headers=litellm_additional_headers,
                 long_term_logger=long_term_logger,
             )
@@ -770,6 +771,7 @@ def stream_chat_message_objects(
                         llm_override=(
                             new_msg_req.llm_override or chat_session.llm_override
                         ),
+                        user_email=user.email if user else None,
                         additional_headers=litellm_additional_headers,
                     )
                 )
