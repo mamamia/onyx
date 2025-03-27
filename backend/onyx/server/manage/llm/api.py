@@ -45,7 +45,7 @@ def fetch_llm_options(
 @admin_router.post("/test")
 def test_llm_configuration(
     test_llm_request: TestLLMRequest,
-    _: User | None = Depends(current_admin_user),
+    user: User | None = Depends(current_admin_user),
 ) -> None:
     llm = get_llm(
         provider=test_llm_request.provider,
@@ -55,6 +55,7 @@ def test_llm_configuration(
         api_version=test_llm_request.api_version,
         custom_config=test_llm_request.custom_config,
         deployment_name=test_llm_request.deployment_name,
+        user_email=user.email if user else None,
     )
 
     functions_with_args: list[tuple[Callable, tuple]] = [(test_llm, (llm,))]
@@ -71,6 +72,7 @@ def test_llm_configuration(
             api_version=test_llm_request.api_version,
             custom_config=test_llm_request.custom_config,
             deployment_name=test_llm_request.deployment_name,
+            user_id=user.email if user else None,
         )
         functions_with_args.append((test_llm, (fast_llm,)))
 

@@ -39,6 +39,7 @@ def get_main_llm_from_tuple(
 def get_llms_for_persona(
     persona: Persona | PersonaOverrideConfig | None,
     llm_override: LLMOverride | None = None,
+    user_email: str | None = None,
     additional_headers: dict[str, str] | None = None,
     long_term_logger: LongTermLogger | None = None,
 ) -> tuple[LLM, LLM]:
@@ -81,6 +82,7 @@ def get_llms_for_persona(
             api_version=llm_provider.api_version,
             custom_config=llm_provider.custom_config,
             temperature=temperature_override,
+            user_email=user_email,
             additional_headers=additional_headers,
             long_term_logger=long_term_logger,
         )
@@ -91,6 +93,7 @@ def get_llms_for_persona(
 def get_default_llm_with_vision(
     timeout: int | None = None,
     temperature: float | None = None,
+    user_email: str | None = None,
     additional_headers: dict[str, str] | None = None,
     long_term_logger: LongTermLogger | None = None,
 ) -> LLM | None:
@@ -123,6 +126,7 @@ def get_default_llm_with_vision(
                 custom_config=provider.custom_config,
                 timeout=timeout,
                 temperature=temperature,
+                user_email=user_email,
                 additional_headers=additional_headers,
                 long_term_logger=long_term_logger,
             )
@@ -133,6 +137,7 @@ def get_default_llm_with_vision(
 def get_default_llms(
     timeout: int | None = None,
     temperature: float | None = None,
+    user_email: str | None = None,
     additional_headers: dict[str, str] | None = None,
     long_term_logger: LongTermLogger | None = None,
 ) -> tuple[LLM, LLM]:
@@ -165,6 +170,7 @@ def get_default_llms(
             custom_config=llm_provider.custom_config,
             timeout=timeout,
             temperature=temperature,
+            user_email=user_email,
             additional_headers=additional_headers,
             long_term_logger=long_term_logger,
         )
@@ -182,6 +188,7 @@ def get_llm(
     custom_config: dict[str, str] | None = None,
     temperature: float | None = None,
     timeout: int | None = None,
+    user_email: str | None = None,
     additional_headers: dict[str, str] | None = None,
     long_term_logger: LongTermLogger | None = None,
 ) -> LLM:
@@ -198,6 +205,7 @@ def get_llm(
         temperature=temperature,
         custom_config=custom_config,
         extra_headers=build_llm_extra_headers(additional_headers),
+        extra_body={"user_id": user_email},
         model_kwargs=_build_extra_model_kwargs(provider),
         long_term_logger=long_term_logger,
     )
