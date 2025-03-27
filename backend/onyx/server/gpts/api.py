@@ -65,10 +65,10 @@ class GptSearchResponse(BaseModel):
 @router.post("/gpt-document-search")
 def gpt_search(
     search_request: GptSearchRequest,
-    _: User | None = Depends(api_key_dep),
+    user: User | None = Depends(api_key_dep),
     db_session: Session = Depends(get_session),
 ) -> GptSearchResponse:
-    llm, fast_llm = get_default_llms()
+    llm, fast_llm = get_default_llms(user_email=user.email if user else None)
     top_sections = SearchPipeline(
         search_request=SearchRequest(
             query=search_request.query,

@@ -121,7 +121,7 @@ def generate_starter_messages(
     Generates starter messages by first obtaining categories and then generating messages for each category.
     On failure, returns an empty list (or list with processed starter messages if some messages are processed successfully).
     """
-    _, fast_llm = get_default_llms(temperature=0.5)
+    _, fast_llm = get_default_llms(temperature=0.5, user_email=user.email if user else None)
 
     provider = fast_llm.config.model_provider
     model = fast_llm.config.model_name

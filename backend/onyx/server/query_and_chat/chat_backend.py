@@ -292,6 +292,7 @@ def rename_chat_session(
 
     try:
         llm, _ = get_default_llms(
+            user_email=user.email if user else None,
             additional_headers=extract_headers(
                 request.headers, LITELLM_PASS_THROUGH_HEADERS
             )
@@ -561,7 +562,7 @@ class ChatSeedResponse(BaseModel):
 def seed_chat(
     chat_seed_request: ChatSeedRequest,
     # NOTE: realistically, this will be an API key not an actual user
-    _: User | None = Depends(current_user),
+    user: User | None = Depends(current_user),
     db_session: Session = Depends(get_session),
 ) -> ChatSeedResponse:
     try:
@@ -581,7 +582,10 @@ def seed_chat(
         root_message = get_or_create_root_message(
             chat_session_id=new_chat_session.id, db_session=db_session
         )
-        llm, fast_llm = get_llms_for_persona(persona=new_chat_session.persona)
+        llm, fast_llm = get_llms_for_persona(
+            persona=new_chat_session.persona,
+            user_email=user.email if user else None,
+        )
 
         tokenizer = get_tokenizer(
             model_name=llm.config.model_name,

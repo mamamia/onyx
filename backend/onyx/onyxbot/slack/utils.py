@@ -87,7 +87,7 @@ def check_message_limit() -> bool:
     return True
 
 
-def rephrase_slack_message(msg: str) -> str:
+def rephrase_slack_message(msg: str, user_email: str | None = None) -> str:
     def _get_rephrase_message() -> list[dict[str, str]]:
         messages = [
             {
@@ -99,7 +99,7 @@ def rephrase_slack_message(msg: str) -> str:
         return messages
 
     try:
-        llm, _ = get_default_llms(timeout=5)
+        llm, _ = get_default_llms(timeout=5, user_email=user_email)
     except GenAIDisabledException:
         logger.warning("Unable to rephrase Slack user message, Gen AI disabled")
         return msg

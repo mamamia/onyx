@@ -104,7 +104,7 @@ def document_hidden_update(
 
 @router.get("/admin/genai-api-key/validate")
 def validate_existing_genai_api_key(
-    _: User = Depends(current_admin_user),
+    user: User = Depends(current_admin_user),
 ) -> None:
     # Only validate every so often
     kv_store = get_kv_store()
@@ -121,7 +121,7 @@ def validate_existing_genai_api_key(
         pass
 
     try:
-        llm, __ = get_default_llms(timeout=10)
+        llm, __ = get_default_llms(timeout=10, user_email=user.email if user else None)
     except ValueError:
         raise HTTPException(status_code=404, detail="LLM not setup")
 
