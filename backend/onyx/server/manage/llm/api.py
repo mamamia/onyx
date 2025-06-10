@@ -55,11 +55,8 @@ def fetch_llm_options(
 def test_llm_configuration(
     test_llm_request: TestLLMRequest,
     user: User | None = Depends(current_admin_user),
-<<<<<<< HEAD
     _: User | None = Depends(current_admin_user),
     db_session: Session = Depends(get_session),
-=======
->>>>>>> 37085c9d2805e374e287276237b715f8e7a7c7da
 ) -> None:
     """Test regular llm and fast llm settings"""
 
