@@ -49,7 +49,7 @@ def get_llms_for_persona(
 ) -> tuple[LLM, LLM]:
     if persona is None:
         logger.warning("No persona provided, using default LLMs")
-        return get_default_llms()
+        return get_default_llms(user_email=user_email)
 
     model_provider_override = llm_override.model_provider if llm_override else None
     model_version_override = llm_override.model_version if llm_override else None
@@ -59,6 +59,7 @@ def get_llms_for_persona(
     if not provider_name:
         return get_default_llms(
             temperature=temperature_override or GEN_AI_TEMPERATURE,
+            user_email=user_email,
             additional_headers=additional_headers,
             long_term_logger=long_term_logger,
         )

@@ -62,7 +62,7 @@ def handle_search_request(
     query = search_request.message
     logger.notice(f"Received document search query: {query}")
 
-    llm, fast_llm = get_default_llms()
+    llm, fast_llm = get_default_llms(user_email=user.email if user else None)
 
     search_pipeline = SearchPipeline(
         search_request=SearchRequest(

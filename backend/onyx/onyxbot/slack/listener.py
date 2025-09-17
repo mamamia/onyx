@@ -824,7 +824,7 @@ def build_request_details(
         if DANSWER_BOT_REPHRASE_MESSAGE:
             logger.info(f"Rephrasing Slack message. Original message: {msg}")
             try:
-                msg = rephrase_slack_message(msg)
+                msg = rephrase_slack_message(msg, user_email=email)
                 logger.info(f"Rephrased message: {msg}")
             except Exception as e:
                 logger.error(f"Error while trying to rephrase the Slack message: {e}")
